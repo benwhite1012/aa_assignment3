@@ -4,6 +4,14 @@
 #include <iostream>
 #include "median.hpp"
 
-int median(const std::string text) {
-    return static_cast<int>(text.size());
+//quick select
+int qselect(std::vector<int>& vec) {
+    std::ignore = vec;
+    return -1; //placeholder
+}
+
+//median of medians
+int mom(std::vector<int>& vec) {
+    std::ignore = vec;
+    return -1; //placeholder
 }

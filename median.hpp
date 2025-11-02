@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 
-int median(const std::string text);
+int qselect(std::vector<int>& vec);
+int mom(std::vector<int>& vec);
 
 #endif      // MEDIAN_HPP_
