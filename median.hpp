@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 
-int qselect(std::vector<int>& vec);
-int mom(std::vector<int>& vec);
+int qselect(std::vector<int>& vec, std::string p_method);
+int mom(std::vector<int>& vec, std::string p_method);
 
 #endif      // MEDIAN_HPP_

@@ -5,16 +5,28 @@
 #include <random>
 #include "median.hpp"
 
+//helper function for randomised pivot selection
+int random_p(int l, int r, std::mt19937& rng) {
+    std::uniform_int_distribution<int> dist(l, r); //defines a range within the current partiton (between l and r)
+    return dist(rng); //generates a random pivot index within partition
+}
+
+//helper function for deterministic pivot selection
+int deterministic_p(int l, int r) {
+    std::ignore = l;
+    std::ignore = r;
+    return 1; //placeholder, should return a deterministic pivot index using median of medians
+}
+
 //quick select
-int qselect(std::vector<int>& vec) {
+int qselect(std::vector<int>& vec, std::string p_method) {
     //if array is empty throw error
     if (vec.empty()) {
         throw std::invalid_argument("vector must not be empty");
     }
 
     const int n = vec.size(); //length of vector
-    const int k = (n - 1) / 2; //kth element aka the index of the median, if n is even then lower median
-    std::ignore = k;
+    const int k = (n - 1) / 2; //kth element aka the index of the median, if n is even then lower median 
 
     int l = 0; //left most index
     int r = n - 1; //right most index
@@ -25,11 +37,16 @@ int qselect(std::vector<int>& vec) {
     while (true) {
         if (l == r) {return vec[l];} //if only one element remaining in partition, return it
 
-        //pick pivot at random
-        std::uniform_int_distribution<std::size_t> dist(l, r); //defines a range within the current partiton (between l and r)
-        int p_index = dist(rng); //generates a random pivot index
-        int p = vec[p_index]; //retrieves pivot value
+        int p_index = 1; //pivot index
+        
+        if (p_method == "r") {
+            p_index = random_p(l, r, rng); //get randomised pivot index
+        }
+        else if (p_method == "d") {
+            p_index = deterministic_p(l, r); //get deterministic pivot index
+        }
 
+        int p = vec[p_index]; //get pivot value
 
         std::swap(vec[p_index], vec[r]); //move pivot to end of partition
         int less_index = l;  //index to track where to place elements less than pivot
@@ -56,7 +73,6 @@ int qselect(std::vector<int>& vec) {
 }
 
 //median of medians
-int mom(std::vector<int>& vec) {
-    std::ignore = vec;
-    return -1; //placeholder
+int mom(std::vector<int>& vec, std::string p_method) {
+    return qselect(vec, p_method);
 }
