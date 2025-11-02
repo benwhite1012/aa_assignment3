@@ -44,13 +44,17 @@ int qselect(std::vector<int>& vec) {
         std::swap(vec[less_index], vec[r]); //move pivot in between the elements that were less than and greater than it
 
         //to do:
-        //1. since p is now at its correct index we can check where k is in relation to it 
-        //2. then update l and r accordingly to continue search on one side, or return p value (if p=k)
-        //3. update return statment
+        //1. since p is now at its correct index we can check where k is in relation to it (done)
+        //2. then update l and r accordingly to continue search on one side, or return p value (if p=k) (done)
+        //3. remove return statment (done)
+
+        if (k == less_index) {return vec[less_index];} //found median, return the pivot value
+
+        else if (k < less_index) {r = less_index - 1;} //k is on left side of p, update r so we search only the left side of the pivot
+
+        else {l = less_index + 1;} //k is on the right side of p, update l so we only search the right side of the pivot
 
     }
-
-    return -1; //placeholder
 }
 
 //median of medians
