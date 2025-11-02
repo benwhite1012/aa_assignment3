@@ -3,7 +3,7 @@
 #include "median.hpp"
 
 int main() {
-    std::vector<int> numbers = {10}; //test array
+    std::vector<int> numbers = {10, 3, 4, 9, 6, 1, 2, 8, 5, 7}; //test array
 
     int q_median = qselect(numbers); //return median using quick select
     std::cout << "Quick Select: " << q_median << "\n";
