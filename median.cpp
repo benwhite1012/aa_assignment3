@@ -17,7 +17,18 @@ int deterministic_p(std::vector<int>& v, int l, int r) {
     const int n = r - l + 1; //length of current partition
     std::ignore = n;
 
-    //to do: short cut find the median directly if n <= 5
+    //short cut to find the median directly if partition has length <= 5
+    if (n <= 5) {
+        std::vector<int> small(v.begin() + l, v.begin() + r + 1); //create a vector of current partition
+        std::sort(small.begin(), small.end()); //sort vector
+        int median_val = small[(n - 1) / 2];  //get median value (lower median if even number of elements)
+
+        //find index of median_val in original vector and return it
+        for (int i = l; i <= r; ++i) {
+            if (v[i] == median_val) return i; //return index of median
+        }
+        throw std::logic_error("median of medians not found in small partition (n<=5)"); //should never reach here
+    }
 
     std::vector<int> medians; //vector to hold medians of each group of 5
 
@@ -30,7 +41,7 @@ int deterministic_p(std::vector<int>& v, int l, int r) {
     }
 
     //recursively call mom to find median of medians
-    int median_of_medians = mom(medians, false);
+    int median_of_medians = mom(medians);
 
     //find index of median_of_medians in original vector and return it
     for (int i = l; i <= r; ++i) {
@@ -39,7 +50,7 @@ int deterministic_p(std::vector<int>& v, int l, int r) {
         }
     }
     
-    throw std::logic_error("median_of_medians not found in partition"); //should never reach here
+    throw std::logic_error("median of medians not found in partition"); //should never reach here
 }
 
 //quick select
@@ -99,6 +110,6 @@ int qselect(std::vector<int>& vec, bool random) {
 }
 
 //median of medians
-int mom(std::vector<int>& vec, bool random) {
-    return qselect(vec, random);
+int mom(std::vector<int>& vec) {
+    return qselect(vec, false); //call qselect with deterministic pivot selection
 }

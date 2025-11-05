@@ -5,6 +5,6 @@
 #include <vector>
 
 int qselect(std::vector<int>& vec, bool random);
-int mom(std::vector<int>& vec, bool random);
+int mom(std::vector<int>& vec);
 
 #endif      // MEDIAN_HPP_

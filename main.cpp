@@ -46,7 +46,7 @@ int main() {
     std::cout << "Test array: " << vec_str(test) << "\n"; //print test array
 
     int q_median = qselect(test, true); //return median using quick select
-    int m_median = mom(test, false); //return median using median of medians
+    int m_median = mom(test); //return median using median of medians
     
     std::cout << ((q_median == median) ? "Success! " : "Failed! ");     
     std::cout << "Expected: " << median << " Quick Select: " << q_median << "\n";
