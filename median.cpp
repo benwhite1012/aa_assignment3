@@ -3,20 +3,43 @@
 #include <vector>
 #include <iostream>
 #include <random>
+#include <algorithm> //only used sort() for arrays of size <=5 in deterministic pivot selection
 #include "median.hpp"
 
-//helper function for randomised pivot selection
+//function for selecting randomised pivot selection
 int random_p(int l, int r, std::mt19937& rng) {
     std::uniform_int_distribution<int> dist(l, r); //defines a range within the current partiton (between l and r)
     return dist(rng); //generates a random pivot index within partition
 }
 
-//helper function for deterministic pivot selection
+//function for selecting a deterministic pivot selection
 int deterministic_p(std::vector<int>& v, int l, int r) {
-    auto d = v; //vector copy
-    std::ignore = l;
-    std::ignore = r;
-    return 1; //placeholder, should return a deterministic pivot index using median of medians
+    const int n = r - l + 1; //length of current partition
+    std::ignore = n;
+
+    //to do: short cut find the median directly if n <= 5
+
+    std::vector<int> medians; //vector to hold medians of each group of 5
+
+    //find median of each group of 5
+    for (int start = l; start <= r; start += 5) { //loop through current partition in groups of 5
+        const int end = std::min(start + 4, r); //end index of current group of 5
+        std::vector<int> group(v.begin() + start, v.begin() + end + 1); //create group of up to 5 elements
+        std::sort(group.begin(), group.end()); //sort group of 5 to find median
+        medians.push_back(group[(int(group.size()) - 1) / 2]); //add lower median to medians vector
+    }
+
+    //recursively call mom to find median of medians
+    int median_of_medians = mom(medians, false);
+
+    //find index of median_of_medians in original vector and return it
+    for (int i = l; i <= r; ++i) {
+        if (v[i] == median_of_medians) { //if median value matched, return index of it
+            return i; //return pivot index
+        }
+    }
+    
+    throw std::logic_error("median_of_medians not found in partition"); //should never reach here
 }
 
 //quick select
