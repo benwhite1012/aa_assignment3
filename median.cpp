@@ -3,7 +3,7 @@
 #include <vector>
 #include <iostream>
 #include <random>
-#include <algorithm> //only used sort() for arrays of size <=5 in deterministic pivot selection
+#include <algorithm> //only used for sort() for arrays of size <=5 in deterministic pivot selection
 #include "median.hpp"
 
 //function for selecting randomised pivot selection
@@ -12,10 +12,9 @@ int random_p(int l, int r, std::mt19937& rng) {
     return dist(rng); //generates a random pivot index within partition
 }
 
-//function for selecting a deterministic pivot selection
+//function for selecting a deterministic pivot selection using median of medians
 int deterministic_p(std::vector<int>& v, int l, int r) {
     const int n = r - l + 1; //length of current partition
-    std::ignore = n;
 
     //short cut to find the median directly if partition has length <= 5
     if (n <= 5) {
@@ -74,7 +73,7 @@ int qselect(std::vector<int>& vec, bool random) {
     while (true) {
         if (l == r) {return v[l];} //if only one element remaining in partition, return it
 
-        int p_index = 1; //pivot index
+        int p_index; //pivot index
         
         if (random) {
             p_index = random_p(l, r, rng); //get randomised pivot index

@@ -3,6 +3,8 @@
 #include <random>
 #include <string>
 #include <algorithm>
+#include <tuple>
+#include <chrono>
 #include "median.hpp"
 
 //generates a random array of n integers between f and l
@@ -56,7 +58,9 @@ bool run_test(std::vector<int> test_array, const std::string& test_name, bool ra
 }
 
 //runs tests for a given pivot selection method
-std::tuple<int, int> tests(bool random, std::mt19937& rng) {
+std::tuple<int, int, double> tests(bool random, std::mt19937& rng) {
+
+    auto start = std::chrono::high_resolution_clock::now(); //start timer
 
     //print which pivot selection method is being tested
     if (random) {
@@ -91,16 +95,19 @@ std::tuple<int, int> tests(bool random, std::mt19937& rng) {
         tally(run_test(test_array, "random_test", random, false)); //run test without printing individual results
     }
 
-    return {passed_tests, total_tests}; //return number of passed tests and total tests
+    auto end =  std::chrono::high_resolution_clock::now(); //end timer
+    std::chrono::duration<double> elapsed = end - start; //calculate elapsed time
+
+    return {passed_tests, total_tests, elapsed.count()}; //return number of passed tests, total tests and elapsed time
 }
 
 int main() {
     std::mt19937 rng(23); //random no. generator, fixed seed for reproducibility
 
     //run tests for both pivot selection methods
-    auto [pass_r, total_r] = tests(true, rng);
+    auto [pass_r, total_r, time_r] = tests(true, rng);
     std::cout << "\n";
-    auto [pass_d, total_d] = tests(false, rng);
+    auto [pass_d, total_d, time_d] = tests(false, rng);
     std::cout << "\n";
 
     //print summary of test results
@@ -108,6 +115,9 @@ int main() {
     std::cout << pass_r << " out of " << total_r << " randomised pivot selection tests passed.\n";
 
     if (pass_d == total_d) {std::cout << "Success! ";} else std::cout << "Failed! ";
-    std::cout << pass_d << " out of " << total_d << " deterministic pivot selection tests passed.\n";
+    std::cout << pass_d << " out of " << total_d << " deterministic pivot selection tests passed.\n\n";
+
+    std::cout << "Randomised qselect test time: " << time_r << " seconds\n";
+    std::cout << "MoM qselect test time: " << time_d << " seconds\n";
 
 }
