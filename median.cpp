@@ -59,9 +59,7 @@ int qselect(std::vector<int>& vec, bool random) {
         throw std::invalid_argument("vector must not be empty");
     }
 
-    auto v = vec; //vector copy
-
-    const int n = v.size(); //length of vector
+    const int n = vec.size(); //length of vector
     const int k = (n - 1) / 2; //kth element aka the index of the median, if n is even then lower median 
 
     int l = 0; //left most index
@@ -71,7 +69,7 @@ int qselect(std::vector<int>& vec, bool random) {
 
     //recursive quick sort pattern
     while (true) {
-        if (l == r) {return v[l];} //if only one element remaining in partition, return it
+        if (l == r) {return vec[l];} //if only one element remaining in partition, return it
 
         int p_index; //pivot index
         
@@ -79,27 +77,27 @@ int qselect(std::vector<int>& vec, bool random) {
             p_index = random_p(l, r, rng); //get randomised pivot index
         }
         else {
-            p_index = deterministic_p(v, l, r); //get deterministic pivot index
+            p_index = deterministic_p(vec, l, r); //get deterministic pivot index
         }
 
-        int p = v[p_index]; //get pivot value
+        int p = vec[p_index]; //get pivot value
 
-        std::swap(v[p_index], v[r]); //move pivot to end of partition
+        std::swap(vec[p_index], vec[r]); //move pivot to end of partition
         int less_index = l;  //index to track where to place elements less than pivot
 
         for (int i = l; i < r; ++i) { //start at left most index, loop through until right most index of partition
-            if (v[i] < p) {
-                std::swap(v[i], v[less_index]); //put current element on the less than p side (left side of partition)
+            if (vec[i] < p) {
+                std::swap(vec[i], vec[less_index]); //put current element on the less than p side (left side of partition)
                 ++less_index; //increment index
             }
         } 
 
-        std::swap(v[less_index], v[r]); //move pivot in between the elements that were less than and greater than it
+        std::swap(vec[less_index], vec[r]); //move pivot in between the elements that were less than and greater than it
 
         //since p is now at its correct index we can check where k is in relation to it
         //then update l and r accordingly to continue search on one side, or return p value (if p=k)
 
-        if (k == less_index) {return v[less_index];} //found median, return the pivot value
+        if (k == less_index) {return vec[less_index];} //found median, return the pivot value
 
         else if (k < less_index) {r = less_index - 1;} //k is on left side of p, update r so we search only the left side of the pivot
 
@@ -107,7 +105,6 @@ int qselect(std::vector<int>& vec, bool random) {
 
     }
 }
-
 //median of medians
 int mom(std::vector<int>& vec) {
     return qselect(vec, false); //call qselect with deterministic pivot selection
