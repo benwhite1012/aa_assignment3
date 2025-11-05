@@ -38,17 +38,19 @@ int nth_median(std::vector<int> vector) {
 }
 
 //runs a single test case
-bool run_test(std::vector<int> test_array, const std::string& test_name, bool random) {  
+bool run_test(std::vector<int> test_array, const std::string& test_name, bool random, bool print) {  
     int expected = nth_median(test_array); //get expected median using nth_element
     int result = qselect(test_array, random); //get median using with specified pivot selection method
     bool passed = (result == expected); //check if test passed
     
     //print test name and result
-    std::cout << "  " << (passed ? "[PASS]" : "[FAIL]") << " " << test_name;
-    if (!passed) {
-        std::cout << " - Expected: " << expected << ", Got: " << result;
+    if (print) {
+        std::cout << "  " << (passed ? "[PASS]" : "[FAIL]") << " " << test_name;
+        if (!passed) {
+            std::cout << " - Expected: " << expected << ", Got: " << result;
+        }
+        std::cout << "\n";
     }
-    std::cout << "\n";
     
     return passed; //return whether test passed
 }
@@ -58,9 +60,9 @@ std::tuple<int, int> tests(bool random, std::mt19937& rng) {
 
     //print which pivot selection method is being tested
     if (random) {
-        std::cout << "Running tests with randomised pivot selection...\n";
+        std::cout << "Running edge case tests with randomised pivot selection...\n";
     } else {
-        std::cout << "Running tests with deterministic pivot selection...\n";
+        std::cout << "Running edge case tests with deterministic pivot selection...\n";
     }
     
     int total_tests = 0; //count total tests
@@ -73,13 +75,21 @@ std::tuple<int, int> tests(bool random, std::mt19937& rng) {
     };
 
     //run fixed test cases for edge cases
-    tally(run_test(generate_array(1, 100, 1, rng), "Single element array", random));
-    tally(run_test(generate_array(1, 100, 2, rng), "Two element array", random));
-    tally(run_test(generate_array(1, 100, 3, rng), "Three element array", random));
-    tally(run_test({4,4,4,4,4,4,4,4,4}, "Identical elements", random));
-    tally(run_test({1,2,3,4,5,6,7,8,9,10}, "Already sorted ascending", random));
-    tally(run_test({10,9,8,7,6,5,4,3,2,1}, "Already sorted descending", random));
-    tally(run_test(generate_array(1, 1000, 10000, rng), "Large random array (10000 elements)", random));
+    tally(run_test(generate_array(1, 100, 1, rng), "Single element array", random, true));
+    tally(run_test(generate_array(1, 100, 2, rng), "Two element array", random, true));
+    tally(run_test(generate_array(1, 100, 3, rng), "Three element array", random, true));
+    tally(run_test({-1,-2,5,-3,-6,-10}, "Negative elements", random, true));
+    tally(run_test({4,4,4,4,4,4,4,4,4}, "Identical elements", random, true));
+    tally(run_test({1,2,3,4,5,6,7,8,9,10}, "Already sorted ascending", random, true));
+    tally(run_test({10,9,8,7,6,5,4,3,2,1}, "Already sorted descending", random, true));
+    tally(run_test(generate_array(1, 1000, 10000, rng), "Large random array (10,000 elements)", random, true));
+
+    //run 10,000 random test cases
+    for (int i = 0; i < 10000; ++i) {
+        int n = rng() % 1000 + 1; //random array size between 1 and 1000
+        std::vector<int> test_array = generate_array(-1000, 1000, n, rng); //generate random array up to size n with elements between -1000 and 1000
+        tally(run_test(test_array, "random_test", random, false)); //run test without printing individual results
+    }
 
     return {passed_tests, total_tests}; //return number of passed tests and total tests
 }
@@ -89,7 +99,9 @@ int main() {
 
     //run tests for both pivot selection methods
     auto [pass_r, total_r] = tests(true, rng);
+    std::cout << "\n";
     auto [pass_d, total_d] = tests(false, rng);
+    std::cout << "\n";
 
     //print summary of test results
     if (pass_r == total_r) {std::cout << "Success! ";} else std::cout << "Failed! ";
