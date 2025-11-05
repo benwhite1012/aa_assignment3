@@ -3,8 +3,11 @@
 #include <vector>
 #include <iostream>
 #include <random>
-#include <algorithm> //only used for sort() for arrays of size <=5 in deterministic pivot selection
+#include <algorithm> //only included for sort() for arrays of size <=5 in deterministic pivot selection
 #include "median.hpp"
+
+//problem: find the median (or lower median if even number of elements) of an unsorted array of integers
+//solution: without fully sorting the array, use quick select with either a randomised or deterministic pivot selection to find the median efficiently
 
 //function for selecting randomised pivot selection
 int random_p(int l, int r, std::mt19937& rng) {
@@ -105,7 +108,7 @@ int qselect(std::vector<int>& vec, bool random) {
 
     }
 }
-//median of medians
+//qselect() with median of medians pivot selection
 int mom(std::vector<int>& vec) {
     return qselect(vec, false); //call qselect with deterministic pivot selection
 }
